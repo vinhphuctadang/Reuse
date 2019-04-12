@@ -17,3 +17,6 @@ while 1: #go for a few seconds
 stream.stop_stream()
 stream.close()
 p.terminate()
+
+# Source borrowed from: https://www.swharden.com/wp/2016-07-19-realtime-audio-visualization-in-python/
+# Special thanks to author
