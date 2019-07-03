@@ -1,4 +1,4 @@
-Socket C++ OOP implementation
+# Socket C++ OOP implementation
 
 Compile with -fpermissive, -lWs2_32
 Need "StringUtils.h" (provided)
