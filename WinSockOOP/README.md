@@ -8,15 +8,15 @@ Need "StringUtils.h" (provided)
 int main () {
   Socket::initialize ();
   Socket sock;
-  sock.bind ('localhost', 8888);
-  sock.listen ()
+  sock.Bind ('localhost', 8888);
+  sock.Listen ()
   while (true){
-    auto conn = sock.accept ();
+    auto conn = sock.Accept ();
     // Process connections
       conn->Send ("Hello World", 11)    // 11 is buffer - length
    }
 
-  sock.close ();
+  sock.Close ();
   Socket::finalize ();
 }
 ```
@@ -26,12 +26,12 @@ int main () {
 ```C++
 Socket::initialize ();
 Socket sock;
-sock.connect ('localhost', 8888);
+sock.Connect ('localhost', 8888);
 char buf[255];
 sock.Recieve (buf, 255);
 printf ("%s", buf);
 
-sock.close ();
+sock.Close ();
 Socket::finalize ();
 
 ```
