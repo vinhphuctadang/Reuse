@@ -4,7 +4,7 @@ Compile with -fpermissive, -lWs2_32
 Need "StringUtils.h" (provided)
 
 ------- Server side ---------
-'''C++
+```C++
 int main () {
   Socket::initialize ();
   Socket sock;
@@ -19,11 +19,11 @@ int main () {
   sock.close ();
   Socket::finalize ();
 }
-'''
+```
 
 ------- Client size ---------
 
-'''C++
+```C++
 Socket::initialize ();
 Socket sock;
 sock.connect ('localhost', 8888);
@@ -34,4 +34,4 @@ printf ("%s", buf);
 sock.close ();
 Socket::finalize ();
 
-'''
+```
