@@ -38,10 +38,10 @@ void Socket::Bind (string addr, int port) {
     
 	ListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
     if (ListenSocket == INVALID_SOCKET) {
-    	
+    	int lastErr = WSAGetLastError();
     	freeaddrinfo(result);
 //    	WSACleanup();
-        throw CodeException ("WinSocket failed retrieving listen socket", WSAGetLastError());
+        throw CodeException ("WinSocket failed retrieving listen socket", lastErr);
     }
     
     // Setup the TCP listening socket
@@ -71,10 +71,9 @@ void Socket::Listen (int number=SOMAXCONN) {
 Socket* Socket::Accept() {
 	auto ClientSocket = accept(ListenSocket, NULL, NULL);
     if (ClientSocket == INVALID_SOCKET) {
+    	int lastErr = WSAGetLastError();
     	closesocket(ListenSocket);
-//        WSACleanup();
-        throw CodeException ("Accept failed", WSAGetLastError());
-//        return 1;
+        throw CodeException ("Accept failed", lastErr);
     }
     
     return new Socket (ClientSocket);
@@ -85,9 +84,10 @@ void Socket::Send(char* buffer, int bufferSize) {
 	auto iSendResult = send(ListenSocket, buffer, bufferSize, 0);
 	
     if (iSendResult == SOCKET_ERROR) {
+    	int lastErr = WSAGetLastError();
     	closesocket(ListenSocket);
 //    	WSACleanup();
-        throw CodeException ("Send failed", WSAGetLastError());
+        throw CodeException ("Send failed", lastErr);
     }
 }
 int Socket::Receive(char* buffer, int bufferSize=1024) {
@@ -97,6 +97,11 @@ int Socket::Receive(char* buffer, int bufferSize=1024) {
 	if (iResult < 0) {
 		throw CodeException ("Recieve error", WSAGetLastError());
 	}
+	
+	if (iResult == 0) {
+		throw CodeException ("Recieve terminated while socket is closing", WSAGetLastError());
+	}
+	
 	return iResult;
 }
 
@@ -120,6 +125,8 @@ int Socket::Connect(string addr, int port) {
     auto ConnectSocket = INVALID_SOCKET;
     
 	long long countAttempts = 0;
+	
+	int lastErr = 0;
     for(auto ptr=result; ptr != NULL ;ptr=ptr->ai_next) {
     	
     	countAttempts ++;
@@ -131,6 +138,8 @@ int Socket::Connect(string addr, int port) {
         // Connect to server.
         iResult = connect(ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
         if (iResult == SOCKET_ERROR) {
+        	
+        	lastErr = WSAGetLastError();
             closesocket(ConnectSocket);
             ConnectSocket = INVALID_SOCKET;
             continue;
@@ -141,7 +150,7 @@ int Socket::Connect(string addr, int port) {
     freeaddrinfo(result);
     if (ConnectSocket == INVALID_SOCKET) {
         throw CodeException (string ("Socket can not create connection. Attempt counts: ") + toString (countAttempts), 
-			WSAGetLastError());
+			lastErr);
     }
     
     ListenSocket = ConnectSocket;

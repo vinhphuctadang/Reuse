@@ -50,7 +50,7 @@ string MsgComm :: RecvMsg (int chunk=1024, unsigned int threshold = 1000000000) 
 	
 	while (msgSize) {
 		unsigned int recvSize = min (msgSize, (unsigned int) chunk);
-		printf ("Read needs: %u\t", recvSize);
+//		printf ("Read needs: %u\t", recvSize);
 		Socket::Receive	(buffer, recvSize);
 		result.append(buffer, recvSize);
 		msgSize -= recvSize;

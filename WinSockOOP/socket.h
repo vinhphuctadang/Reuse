@@ -5,6 +5,7 @@
 #include <ws2tcpip.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <mutex>
 #include "StringUtils.h"
 
 // Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib
@@ -26,10 +27,18 @@ class CodeException : public exception {
 			errCode = __errCode;
 		}
 		
-    const char * what () const throw () {
-    	string result = information + ".Code=" + toString ((unsigned long long) errCode);
-		return result.c_str();
-    }
+		string getInformation () {
+			return information;
+		}
+		
+		int getErrCode () {
+			return errCode;
+		}
+		
+	    const char * what () const throw () {
+	    	string result = information + ".Code=" + toString ((unsigned long long) errCode);
+			return result.c_str();
+	    }
 };
  
 class Socket {

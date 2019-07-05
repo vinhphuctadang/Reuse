@@ -1,16 +1,14 @@
 #include "MsgComm.cpp"
 #include "DisplayUtils.h"
-#include "SafeQueue.h"
+#include "SafeQueue.h"	
 #include <iostream>
 #include <thread> 
 #include <vector>
 #include <mutex>
 
-
 SafeQueue<string> sq;
 vector<MsgComm*> connections;
 mutex m;
-
 
 MsgComm sock;
 int main (int n, char** argv) {
