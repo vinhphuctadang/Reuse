@@ -35,3 +35,5 @@ int main () {
 	ini.toFile("input.ini");
 	printf ("Progress done after %u ms", now_micro () - marked);
 }
+
+// 917 ms on 100000 iteratings (on AMD Ryzen 1600x 3.6 GHz)
