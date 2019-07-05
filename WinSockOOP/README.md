@@ -1,6 +1,6 @@
 # Socket C++ OOP implementation
 
-Mandatory files: socket.h, socket.cpp, MsgComm.cpp, StringUtils.h
+Mandatory files: socket.h, socket.cpp, MsgComm.cpp, StringUtils.h, INI.cpp in INI folder
 
 Compile with -fpermissive, -lWs2_32
 
