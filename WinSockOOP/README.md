@@ -1,7 +1,8 @@
 # Socket C++ OOP implementation
 
+Mandatory files: socket.h, socket.cpp, MsgComm.cpp, StringUtils.h
+
 Compile with -fpermissive, -lWs2_32
-Need "StringUtils.h" (provided)
 
 ------- Server side ---------
 ```C++
