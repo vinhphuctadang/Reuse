@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <iostream>
 #include <fstream>
 #include <utility>
@@ -12,27 +11,60 @@ class INI {
 		umap <string, string> mapping;
 		
 	public:
+		// constructors
 		INI ();
-//		INI (const string& fileName);
-//		INI (INI& ini);
-//		INI ()
-
+		INI (umap <string, string>& __map);
+		INI (const string& fileName); 
+		INI (const INI& ini);
+		// utils
 		void fromFile (const string& fileName);
-//		void fromStream (const istream& stream);
-		void print ();
+		void toFile   (const string& fileName);
 		
-		string get (string key);
-		string get (string key, string default_value);
-		void set (string key, string value);
+		string 		get (string key);
+		string 		get (string key, string default_value);
+		void 		set (string key, string value);
+		void 		remove (string key);
+	
+		string&		operator[] (string key); // for intuition only, make use of get, set and remove
 		
+		friend ostream& operator<<(ostream& ostr, const INI& ini){
+			
+			for (auto element : ini.mapping) {
+				ostr << "'" << element.first << "'='" << element.second << "' " << endl;
+			}	
+			return ostr;
+		}
+		
+		umap <string, string>::iterator begin() { return mapping.begin (); }
+	    umap <string, string>::const_iterator begin() const { return mapping.begin (); }
+	    umap <string, string>::iterator end() { return mapping.end (); }
+	    umap <string, string>::const_iterator end() const { return mapping.end (); }
 	private:
-		pair <string, string> fromString (const string& sample);		
-		
+		pair <string, string> 	fromString (const string& sample);		
+	
 };
 
+// constructors
+INI::INI () {
+	mapping.clear ();	
+}
+
+INI::INI(const string& fileName) {
+	fromFile (fileName);
+}
+
+INI::INI (const INI& ini) {
+	mapping = ini.mapping; // clone a difference INI object
+}
+
+INI::INI (umap <string, string>& __map) {
+	mapping = __map;
+}
 
 
-pair <string, string> INI::fromString (const string& sample) {
+// utils
+
+pair <string, string> INI::fromString (const string& sample) { 
 	std:: string key = "", value = "";
 	int i;
 	for (i = 0; i < sample.length (); ++i) {
@@ -45,16 +77,13 @@ pair <string, string> INI::fromString (const string& sample) {
 	return {key, sample.substr(i+1, sample.length() - i - 1)};	
 }
 
-//void INI::fromStream (const istream& stream) {
-//	
-//}
 void INI::fromFile (const string& fileName) {
 	
+	mapping.clear ();
 	ifstream file (fileName, ios_base::in);
 	while (!file.eof ()) {
 		string sample;
 		getline (file, sample);	
-//		cout << sample << endl;
 		try {
 			auto each = fromString (sample);
 			mapping [each.first] = each.second;
@@ -65,10 +94,14 @@ void INI::fromFile (const string& fileName) {
 	file.close ();
 }
 
-void INI::print() {
-	for (auto element : mapping) {
-		cout << "'" << element.first << "' = '" << element.second << "' " << endl;
-	}
+void INI::toFile   (const string& fileName) {
+	fstream file;
+	file.open (fileName.c_str (), ios_base::out);
+	for (auto value : mapping) {
+		string line = value.first+"="+value.second;// formation performed
+		file << line << endl;
+	}	
+	file.close();
 }
 
 string INI::get (string key){
@@ -86,15 +119,12 @@ void INI::set (string key, string value) {
 	mapping [key] = value;
 }
 
-INI::INI () {
-	
-//	auto res = fromString ("First_Word=Hello world");
-//	std::cout << res.first << "=" << res.second << "|" << std::endl;
+void INI::remove (string key) {
+	auto it = mapping.find (key);
+	if (it != mapping.end ()) mapping.erase (it);
 }
 
-int main () {
-	INI ini;
-	ini.fromFile("input.ini");
-	ini.print ();
-//	ini
+string& INI::operator[] (string key) {
+	return mapping [key];
 }
+
