@@ -13,13 +13,13 @@ int main (int n, char** argv) {
 		
 	try {
 		conn.Connect (ip, port); 	
-		conn.SendMsg("{\"name\":\"PC\"}");
+//		conn.SendMsg("{\"name\":\"PC\"}");
 	} catch (CodeException& e) {
 		printf ("%s", e.what ());
 		return 0;
 	}
 	
-	conn.SendMsg("OKE");
+//	conn.SendMsg("OKE");
 
 	while (1) {
 		string msg = conn.RecvMsg();
