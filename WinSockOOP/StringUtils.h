@@ -13,7 +13,7 @@
 
 #define umap unordered_map
 #define HNHU_MAX_PATH 702
-#define exists(x,y) (y.find(x) != y.end())
+#define exists(x,y) ((y).find(x) != (y).end())
 
 using namespace std;
 using json=nlohmann::json;
