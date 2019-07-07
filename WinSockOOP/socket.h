@@ -1,3 +1,6 @@
+#ifndef SOCKETCPP_H
+#define SOCKETCPP_H
+
 #define WIN32_LEAN_AND_MEAN
 #include <string>
 #include <windows.h>
@@ -18,13 +21,11 @@
 using namespace std;
 
 class CodeException : public exception {
-	private:
+	protected:
 		string information;
 		int errCode; 
 	public:
-		CodeException (string __information, int __errCode) {
-			information = __information;
-			errCode = __errCode;
+		CodeException (const string& __information, int __errCode) : information (__information), errCode(__errCode) {
 		}
 		
 		string getInformation () {
@@ -36,7 +37,7 @@ class CodeException : public exception {
 		}
 		
 	    const char * what () const throw () {
-	    	string result = information + ".Code=" + toString ((unsigned long long) errCode);
+	    	string result = information + ".Code=" + toString ((long long) errCode);
 			return result.c_str();
 	    }
 };
@@ -78,3 +79,4 @@ class Socket {
     };
 WSAData wsaData;
 #include "socket.cpp"
+#endif
