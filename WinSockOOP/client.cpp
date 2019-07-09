@@ -4,18 +4,22 @@
 
 INI ini (".ini");
 
+
+
 string getValue (MsgComm* conn, string key) {
 	
 	json jmsg;
 		jmsg["type"]="request";
-		jmsg["command"]="get";
+		jmsg["function"]="kernel";
+//		jmsg["command"]="get";
+		jmsg["request"]="get";
 		jmsg["variable"]=key;
 	string result = "";
 	conn->SendMsg(jmsg.dump ());
 	while (result == "") result = conn->RecvMsg ();
 	json j = json::parse (result);
 	
-	return j["result"];
+	return j["result"].dump ();
 }
 int main (int n, char** argv) {
 	
