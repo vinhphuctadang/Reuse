@@ -1,3 +1,4 @@
+    
 #include "StringUtils.h"
 #include "cxxopts/include/cxxopts.hpp"
 #include <windows.h>
@@ -157,12 +158,13 @@ json collect (const string& root, const string& current,
 cxxopts::Options init (char* program) {
 	cxxopts::Options options(program, " - describe current directory to json file *.drive");
 	options.add_options()
-		("p,path", "Origianl path to describe, '.' by default", cxxopts::value<std::string>())
-  		("i,ignore", "Ignore file/folder", cxxopts::value<vector<string>>())
-  		("f,filter", "Filter (only accept)", cxxopts::value<vector<string>>())
-		("o,output", "File name", cxxopts::value<string>())
-		("m,main", "Main file (for execution, optional)", cxxopts::value<std::string>())
+		("p,path", "Origianl path to describe, '.' by default", cxxopts::value<std::string>()->default_value ("."))
+  		("i,ignore", "Ignore file/folder (optional)", cxxopts::value<vector<string>>())
+  		("f,filter", "Filter (only accept) (optional)", cxxopts::value<vector<string>>())
+		("o,output", "File name, .drive by default", cxxopts::value<string>()->default_value (".drive"))
+		("m,main", "Main file (for execution, optional, no default)", cxxopts::value<std::string>())
 		("h,help", "Show help", cxxopts::value<bool>())
+//		(",", "Show help", cxxopts::value<bool>())
 		;	
 	return options;
 }
@@ -201,7 +203,7 @@ void input (cxxopts::ParseResult& parsed, vector<regex>& filter, vector<regex>& 
 	try {
 		vec = parsed ["i"].as <vector<string>> ();
 		for (auto element : vec) {
-			printf ("%s\n", element.c_str ());
+//			printf ("%s\n", element.c_str ());
 			ignore.push_back(toRegex (element));
 		}
 	} catch (exception& e) {
@@ -209,11 +211,27 @@ void input (cxxopts::ParseResult& parsed, vector<regex>& filter, vector<regex>& 
 	}
 			
 }
-
-json run (vector<regex>& filter, vector<regex>& ignore, string& root, string& main_value) {
-	auto result = collect (".", root, filter, ignore, "");
+string getFullPath (const string& initial, int bufsize=1024) {
+	char buf[bufsize];
+    TCHAR** lppPart={NULL};
+	auto retval = GetFullPathName(initial.c_str(), bufsize, buf, lppPart);
+    if (retval == 0) 
+        throw DescribeException ("No absolute path found", -4);
+    return string (buf);
+}
+json run (vector<regex>& filter, vector<regex>& ignore,const string& root,const string& main_value) {
+	json result;
+	try {
+		result = collect (".", root, filter, ignore, "");
+	} catch (exception& e) {
+		printf ("FAILED: %s", e.what ());
+		return result;
+	}
+	
 	if (main_value != "")
 		result ["main"] = main_value;
+	
+	result["name"] = getFullPath (root);		
 	return result;
 }
 
@@ -233,13 +251,20 @@ int main(int n, char** argv) {
 		h = parsed["h"].as <bool> ();
 		if (h) {
 			printf ("%s", options.help (options.groups ()).c_str ());
+			printf ("Version: 0.0.1\n");
+			printf ("Author: XP\n");
+			printf ("Contact: vinhphuctadang@gmail.com");
 			return 0;
 		}
+		
+		
+		
 	} catch (exception& e) {
 	}
 	
 	input (parsed, filter, ignore, root, main_value, oFile);
 	auto result = run (filter, ignore, root, main_value);
-	done (result, root + "\\" + oFile);		
+	if (result.begin () != result.end ());
+		done (result, root + "\\" + oFile);		
 	return 0;
 }
