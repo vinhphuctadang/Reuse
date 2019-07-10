@@ -11,7 +11,9 @@ class MsgComm (socket.socket):
 
 	def recvMsg (self, bufferSize=1024, maxSize=1000000000):
 		header =  self.recv (MSG_HEADER_SIZE);
-		size = int.from_bytes (header, byteorder='big', signed=False);
+		size = int.from_bytes (header, byteorder='little', signed=False);
+		print (size)
+
 		if (size > maxSize):
 			raise ValueError ('Overflow size of %d' % size)
 		if (len(header) == MSG_HEADER_SIZE):
@@ -28,7 +30,7 @@ class MsgComm (socket.socket):
 
 def main ():
 	HOST = '127.0.0.1'  # The server's hostname or IP address
-	PORT = 16472        # The port used by the server
+	PORT = 16473        # The port used by the server
 	s = MsgComm (socket.AF_INET, socket.SOCK_STREAM)
 	s.connect((HOST, PORT))
 	print ('Connected')
