@@ -12,7 +12,7 @@ class MsgComm (socket.socket):
 	def recvMsg (self, bufferSize=1024, maxSize=1000000000):
 		header =  self.recv (MSG_HEADER_SIZE);
 		size = int.from_bytes (header, byteorder='big', signed=False);
-		if (size > maxSize)
+		if (size > maxSize):
 			raise ValueError ('Overflow size of %d' % size)
 		if (len(header) == MSG_HEADER_SIZE):
 
@@ -37,4 +37,4 @@ def main ():
 	print('Received:', data)
 
 if __name__=="__main__":
-	main ()
+	main ()	
