@@ -3,9 +3,9 @@ import json
 import requests 
 import os
 
-TOKEN = 'procon30_example_token'
-HOST = "http://127.0.0.1:55531"; # Đặt server thật vào đây
-CURRENT_MATCH_URL = "/matches/1"; # Đổi số hiệu trận đấu hiện tại ở đây
+TOKEN = 'procon30_example_token' # Đổi thành token được cung cấp cho trận đấu
+HOST = "http://127.0.0.1:55531"; #* Đặt server thật vào đây
+CURRENT_MATCH_URL = "/matches/1"; #* Đổi số hiệu trận đấu hiện tại ở đây
 '''
 	httpGET: Tạo một http request GET lên server
 	hiện tại do ta chỉ quan tâm đến server chấm thi nên HOST được sử dụng trong hàm này và URL là đường dẫn TƯƠNG ĐỐI đến chỗ cần lấy
@@ -49,14 +49,20 @@ def __action (agentID, action, dx=1, dy=0):
 		"dy": dy
 	}
 	return toReturn;
+'''
+	Cách gửi các hoạt động (actions) đi:
+	actions = [	
+		__action (2, "move", 1, 1),
+		__action (3, "stay"),
+		]
+	sendActions (actions);		
+
+'''
 def getMatch ():
 	result = httpGET (CURRENT_MATCH_URL, {})
 	return result;
 	# pass
 def main ():
-	acts = [
-		__action (2, "move", dx=1, dy=0)
-	]
 	print (getMatch())
 
 if __name__=="__main__":
