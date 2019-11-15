@@ -61,8 +61,8 @@ def serve (socket):
 					if (count > limit):
 						socket.sendall (b"HET");
 						break;				
-					A = 3#rd (1, 1000000000)
-					B = 6#rd (1, 1000000000)
+					A = rd (1, 1000000000)
+					B = rd (1, 1000000000)
 
 				toSend = str(A) + " " + str(B);
 				socket.send (bytes (toSend, encoding='utf8'))
